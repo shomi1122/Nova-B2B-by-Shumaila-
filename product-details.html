@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NOVA B2B  Product details</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="stars"></div>
+
+<header>
+    <div class="top-bar">
+        <div class="logo"> NOVA B2B</div>
+        <div class="auth">
+            <a href="#">Sign in</a> <span>|</span> <a href="#">Register</a>
+            <span class="lang"> English | USD</span>
+        </div>
+    </div>
+    <div class="main-header">
+        <nav class="categories-nav">
+            <a href="#" class="cat-dropdown"> Categories </a>
+            <a href="index.html">Home</a>
+            <a href="products.html">Ready to Ship</a>
+            <a href="#">Favorites</a>
+            <a href="#">My orders</a>
+        </nav>
+        <div class="search-glass">
+            <input type="text" id="searchInput" placeholder="Search products, suppliers...">
+            <button id="searchBtn"> Search</button>
+        </div>
+    </div>
+</header>
+
+<main>
+    <div class="detail-alibaba-glass">
+        <div class="detail-img glass">
+            <img src="https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=400&h=400&fit=crop" alt="Headphones">
+        </div>
+        <div class="detail-info glass">
+            <h1>OrbitX Pro Headphones</h1>
+            <p class="supplier"> Supplier: Shenzhen Nova Tech</p>
+            <p class="price">$12.50 - $18.90 / piece</p>
+            <p class="moq"> MOQ: 100 pieces</p>
+            <p>OEM supported, 2 year warranty, fast delivery.</p>
+            <label> Color:</label>
+            <select id="colorSelect">
+                <option>Black</option>
+                <option>White</option>
+            </select>
+            <button id="addToCartBtn" class="btn-glow"> Get quote now</button>
+        </div>
+    </div>
+    <div class="reviews-glass glass">
+        <h3> Supplier reviews </h3>
+        <div> "Reliable, fast shipping"  TradeWorks</div>
+        <div> "Good quality for bulk"  Impex Global</div>
+    </div>
+</main>
+
+<footer>
+    <div class="footer-links">
+        <a href="#">Contact us</a>
+        <a href="#">About</a>
+        <a href="#">User agreement</a>
+        <a href="#">Partnership</a>
+        <a href="#">Privacy policy</a>
+    </div>
+    <p> 2026 NOVA B2B  Global trade starts here</p>
+</footer>
+
+<script src="script.js"></script>
+</body>
+</html>
