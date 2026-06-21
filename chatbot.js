@@ -2,9 +2,14 @@
 
 const chatbotHTML = `
 <div id="nova-chatbot">
-  <button id="chat-toggle" onclick="toggleChat()">
-    <span id="chat-icon">💬</span>
-  </button>
+  <div id="chat-toggle-wrap">
+    <span id="nova-label">✨ Nova Assistant</span>
+    <button id="chat-toggle" onclick="toggleChat()">
+      <span class="nova-star">⭐</span>
+      <span class="nova-star">✦</span>
+      <span class="nova-star">★</span>
+    </button>
+  </div>
 
   <div id="chat-window">
     <div id="chat-header">
@@ -43,18 +48,102 @@ const chatbotHTML = `
   z-index: 9999;
   font-family: 'Poppins', system-ui, sans-serif;
 }
-#chat-toggle {
-  width: 60px;
-  height: 60px;
-  border-radius: 50%;
-  background: linear-gradient(135deg, #f97316, #a855f7);
-  border: none;
-  cursor: pointer;
-  font-size: 26px;
-  box-shadow: 0 4px 20px rgba(168,85,247,0.5);
-  transition: transform 0.2s;
+#chat-toggle-wrap {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
 }
-#chat-toggle:hover { transform: scale(1.1); }
+#nova-label {
+  background: linear-gradient(95deg, #f97316, #a855f7);
+  color: white;
+  font-size: 11px;
+  font-weight: 700;
+  padding: 3px 10px;
+  border-radius: 20px;
+  white-space: nowrap;
+  animation: labelBlink 2s infinite alternate;
+  box-shadow: 0 2px 10px rgba(168,85,247,0.4);
+}
+@keyframes labelBlink {
+  0% { opacity: 1; }
+  100% { opacity: 0.6; }
+}
+
+/* Pulse ring */
+#chat-toggle::before {
+  content: '';
+  position: absolute;
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  border: 2px solid rgba(168,85,247,0.6);
+  animation: pulseRing 1.8s ease-out infinite;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+@keyframes pulseRing {
+  0% { transform: translate(-50%, -50%) scale(0.9); opacity: 1; }
+  100% { transform: translate(-50%, -50%) scale(1.5); opacity: 0; }
+}
+
+#chat-toggle {
+  width: 65px;
+  height: 65px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 35%, #6d28d9, #1e1b4b);
+  border: 2px solid rgba(168,85,247,0.5);
+  cursor: pointer;
+  font-size: 14px;
+  position: relative;
+  box-shadow: 0 0 20px rgba(168,85,247,0.6), 0 0 40px rgba(249,115,22,0.2);
+  animation: bounce 3s ease-in-out infinite, glow 2s ease-in-out infinite alternate, shake 5s ease-in-out infinite;
+  overflow: visible;
+}
+
+/* Cosmic face */
+#chat-toggle::after {
+  content: '🌟';
+  position: absolute;
+  font-size: 28px;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+/* Stars orbiting */
+.nova-star {
+  position: absolute;
+  font-size: 8px;
+  animation: orbit linear infinite;
+  pointer-events: none;
+}
+.nova-star:nth-child(1) { animation-duration: 3s; top: -4px; left: 50%; }
+.nova-star:nth-child(2) { animation-duration: 4s; top: 50%; right: -4px; animation-delay: -1s; }
+.nova-star:nth-child(3) { animation-duration: 5s; bottom: -4px; left: 30%; animation-delay: -2s; }
+
+@keyframes orbit {
+  0% { transform: rotate(0deg) translateX(36px) rotate(0deg); }
+  100% { transform: rotate(360deg) translateX(36px) rotate(-360deg); }
+}
+
+@keyframes bounce {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-8px); }
+}
+@keyframes glow {
+  0% { box-shadow: 0 0 15px rgba(168,85,247,0.6), 0 0 30px rgba(249,115,22,0.2); }
+  100% { box-shadow: 0 0 25px rgba(168,85,247,0.9), 0 0 50px rgba(249,115,22,0.5); }
+}
+@keyframes shake {
+  0%, 85%, 100% { transform: translateY(0) rotate(0deg); }
+  88% { transform: translateY(0) rotate(-8deg); }
+  91% { transform: translateY(0) rotate(8deg); }
+  94% { transform: translateY(0) rotate(-5deg); }
+  97% { transform: translateY(0) rotate(5deg); }
+}
 #chat-window {
   display: none;
   flex-direction: column;
@@ -161,7 +250,6 @@ document.getElementById('chat-input').addEventListener('keydown', (e) => {
 function toggleChat() {
   const win = document.getElementById('chat-window');
   win.classList.toggle('open');
-  document.getElementById('chat-icon').textContent = win.classList.contains('open') ? '✕' : '💬';
 }
 
 function addMessage(text, type) {
@@ -281,4 +369,5 @@ function getResponse(msg) {
 
 function match(msg, keywords) {
   return keywords.some(k => msg.includes(k));
-}
+            }
+    
