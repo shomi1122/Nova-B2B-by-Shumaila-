@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NOVA B2B – Sign In / Register</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .auth-wrapper {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 40px 20px;
+        }
+        .auth-box {
+            background: rgba(20, 25, 45, 0.85);
+            backdrop-filter: blur(16px);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 32px;
+            padding: 40px 36px;
+            width: 100%;
+            max-width: 440px;
+        }
+        .auth-logo {
+            text-align: center;
+            font-size: 32px;
+            font-weight: 800;
+            background: linear-gradient(135deg, #a855f7, #06b6d4);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            margin-bottom: 6px;
+        }
+        .auth-tagline {
+            text-align: center;
+            color: #888;
+            font-size: 13px;
+            margin-bottom: 28px;
+        }
+
+        /* Tabs */
+        .auth-tabs {
+            display: flex;
+            background: rgba(255,255,255,0.05);
+            border-radius: 60px;
+            padding: 4px;
+            margin-bottom: 28px;
+        }
+        .tab-btn {
+            flex: 1;
+            padding: 10px;
+            border: none;
+            border-radius: 60px;
+            background: transparent;
+            color: #aaa;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            font-family: inherit;
+            transition: 0.2s;
+        }
+        .tab-btn.active {
+            background: linear-gradient(95deg, #f97316, #a855f7);
+            color: white;
+        }
+
+        /* Form */
+        .auth-form { display: none; }
+        .auth-form.active { display: block; }
+
+        .form-group {
+            margin-bottom: 16px;
+        }
+        .form-group label {
+            display: block;
+            font-size: 13px;
+            color: #ccc;
+            margin-bottom: 6px;
+        }
+        .form-group input, .form-group select {
+            width: 100%;
+            background: rgba(255,255,255,0.07);
+            border: 1px solid rgba(255,255,255,0.12);
+            border-radius: 12px;
+            padding: 13px 16px;
+            color: white;
+            font-size: 14px;
+            font-family: inherit;
+            outline: none;
+            transition: border-color 0.2s;
+            box-sizing: border-box;
+        }
+        .form-group input:focus, .form-group select:focus {
+            border-color: #a855f7;
+        }
+        .form-group input::placeholder { color: #555; }
+        .form-group select option { background: #0a0f1e; }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+
+        .auth-btn {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(95deg, #f97316, #a855f7);
+            border: none;
+            border-radius: 60px;
+            color: white;
+            font-size: 15px;
+            font-weight: 700;
+            cursor: pointer;
+            font-family: inherit;
+            margin-top: 8px;
+            transition: opacity 0.2s, transform 0.2s;
+        }
+        .auth-btn:hover { opacity: 0.9; transform: translateY(-2px); }
+
+        .divider {
+            text-align: center;
+            color: #555;
+            font-size: 13px;
+            margin: 20px 0;
+            position: relative;
+        }
+        .divider::before, .divider::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            width: 40%;
+            height: 1px;
+            background: rgba(255,255,255,0.08);
+        }
+        .divider::before { left: 0; }
+        .divider::after { right: 0; }
+
+        .social-btns {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+        .social-btn {
+            padding: 11px;
+            background: rgba(255,255,255,0.06);
+            border: 1px solid rgba(255,255,255,0.12);
+            border-radius: 12px;
+            color: #ccc;
+            font-size: 13px;
+            font-family: inherit;
+            cursor: pointer;
+            transition: 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+        .social-btn:hover { border-color: #a855f7; color: white; }
+
+        .forgot {
+            text-align: right;
+            font-size: 12px;
+            margin-top: -8px;
+            margin-bottom: 16px;
+        }
+        .forgot a { color: #a855f7; text-decoration: none; }
+
+        .terms {
+            font-size: 12px;
+            color: #666;
+            text-align: center;
+            margin-top: 16px;
+            line-height: 1.6;
+        }
+        .terms a { color: #a855f7; text-decoration: none; }
+
+        .back-home {
+            text-align: center;
+            margin-top: 24px;
+        }
+        .back-home a {
+            color: #888;
+            font-size: 13px;
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+        .back-home a:hover { color: #a855f7; }
+
+        /* Success state */
+        .success-box {
+            display: none;
+            text-align: center;
+            padding: 20px 0;
+        }
+        .success-box.show { display: block; }
+        .success-icon { font-size: 60px; margin-bottom: 16px; }
+        .success-title {
+            font-size: 24px;
+            font-weight: 800;
+            background: linear-gradient(135deg, #fff, #a855f7);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            margin-bottom: 10px;
+        }
+        .success-text { color: #aaa; font-size: 14px; margin-bottom: 24px; line-height: 1.6; }
+
+        @media (max-width: 480px) {
+            .auth-box { padding: 28px 20px; }
+            .form-row { grid-template-columns: 1fr; }
+            .social-btns { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="stars"></div>
+
+<header>
+    <div class="top-bar">
+        <div class="logo">⚡ NOVA B2B</div>
+        <div class="auth">
+            <a href="auth.html">Sign in</a> <span>|</span> <a href="auth.html">Register</a>
+            <span class="lang">🌐 English | USD</span>
+        </div>
+    </div>
+    <div class="main-header">
+        <nav class="categories-nav">
+            <a href="#" class="cat-dropdown">📂 Categories ▼</a>
+            <a href="index.html">🏠 Home</a>
+            <a href="products.html">🚚 Ready to Ship</a>
+            <a href="#">❤️ Favorites</a>
+            <a href="#">📦 My orders</a>
+        </nav>
+        <div class="search-glass">
+            <input type="text" placeholder="Search products, suppliers...">
+            <button>✨ Search</button>
+        </div>
+    </div>
+</header>
+
+<main>
+    <div class="auth-wrapper">
+        <div class="auth-box">
+
+            <div class="auth-logo">⚡ NOVA B2B</div>
+            <p class="auth-tagline">Your global trade partner</p>
+
+            <!-- Tabs -->
+            <div class="auth-tabs">
+                <button class="tab-btn active" onclick="switchTab('signin')">🔑 Sign In</button>
+                <button class="tab-btn" onclick="switchTab('register')">✨ Register</button>
+            </div>
+
+            <!-- Success Box -->
+            <div class="success-box" id="successBox">
+                <div class="success-icon">🎉</div>
+                <div class="success-title" id="successTitle">Welcome Back!</div>
+                <p class="success-text" id="successText">You have successfully signed in to NOVA B2B.</p>
+                <a href="index.html" class="btn-glow" style="display:inline-block;">🏠 Go to Home</a>
+            </div>
+
+            <!-- Sign In Form -->
+            <div class="auth-form active" id="signinForm">
+                <div class="social-btns">
+                    <button class="social-btn" onclick="socialLogin('Google')">🌐 Google</button>
+                    <button class="social-btn" onclick="socialLogin('LinkedIn')">💼 LinkedIn</button>
+                </div>
+                <div class="divider">or sign in with email</div>
+
+                <div class="form-group">
+                    <label>📧 Email Address</label>
+                    <input type="email" id="signin-email" placeholder="your@email.com">
+                </div>
+                <div class="form-group">
+                    <label>🔒 Password</label>
+                    <input type="password" id="signin-pass" placeholder="Enter your password">
+                </div>
+                <div class="forgot"><a href="#">Forgot password?</a></div>
+
+                <button class="auth-btn" onclick="handleSignIn()">🔑 Sign In</button>
+
+                <p class="terms">
+                    Don't have an account? <a href="#" onclick="switchTab('register')">Register here</a>
+                </p>
+            </div>
+
+            <!-- Register Form -->
+            <div class="auth-form" id="registerForm">
+                <div class="social-btns">
+                    <button class="social-btn" onclick="socialLogin('Google')">🌐 Google</button>
+                    <button class="social-btn" onclick="socialLogin('LinkedIn')">💼 LinkedIn</button>
+                </div>
+                <div class="divider">or register with email</div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>First Name</label>
+                        <input type="text" id="reg-fname" placeholder="e.g. Shumaila">
+                    </div>
+                    <div class="form-group">
+                        <label>Last Name</label>
+                        <input type="text" id="reg-lname" placeholder="e.g. Abid">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>📧 Email Address</label>
+                    <input type="email" id="reg-email" placeholder="your@email.com">
+                </div>
+                <div class="form-group">
+                    <label>📱 Phone / WhatsApp</label>
+                    <input type="text" placeholder="+92 300 0000000">
+                </div>
+                <div class="form-group">
+                    <label>🌍 Country</label>
+                    <select>
+                        <option>🇵🇰 Pakistan</option>
+                        <option>🇦🇪 UAE</option>
+                        <option>🇺🇸 United States</option>
+                        <option>🇬🇧 United Kingdom</option>
+                        <option>🇸🇦 Saudi Arabia</option>
+                        <option>🇩🇪 Germany</option>
+                        <option>🇨🇦 Canada</option>
+                        <option>🇦🇺 Australia</option>
+                        <option>Other</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>🏢 Account Type</label>
+                    <select>
+                        <option>🛒 Buyer — I want to source products</option>
+                        <option>🏭 Supplier — I want to sell products</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>🔒 Password</label>
+                    <input type="password" id="reg-pass" placeholder="Create a strong password">
+                </div>
+                <div class="form-group">
+                    <label>🔒 Confirm Password</label>
+                    <input type="password" id="reg-pass2" placeholder="Repeat your password">
+                </div>
+
+                <button class="auth-btn" onclick="handleRegister()">✨ Create Account</button>
+
+                <p class="terms">
+                    By registering you agree to our <a href="#">Terms of Service</a> and <a href="#">Privacy Policy</a>
+                </p>
+            </div>
+
+            <div class="back-home">
+                <a href="index.html">← Back to Home</a>
+            </div>
+        </div>
+    </div>
+</main>
+
+<footer>
+    <div class="footer-links">
+        <a href="#">📞 Contact us</a>
+        <a href="#">ℹ️ About</a>
+        <a href="#">📄 User agreement</a>
+        <a href="#">🤝 Partnership</a>
+        <a href="#">🔒 Privacy policy</a>
+    </div>
+    <p>© 2026 NOVA B2B — Global trade starts here</p>
+    <p style="margin-top:8px; font-size:13px; background: linear-gradient(135deg, #a855f7, #f97316); -webkit-background-clip:text; background-clip:text; color:transparent; font-weight:600;">✦ Designed by Shumaila Abid ✦</p>
+</footer>
+
+<script>
+function switchTab(tab) {
+    document.querySelectorAll('.tab-btn').forEach((b, i) => {
+        b.classList.toggle('active', (tab === 'signin' && i === 0) || (tab === 'register' && i === 1));
+    });
+    document.getElementById('signinForm').classList.toggle('active', tab === 'signin');
+    document.getElementById('registerForm').classList.toggle('active', tab === 'register');
+    document.getElementById('successBox').classList.remove('show');
+}
+
+function showSuccess(title, text) {
+    document.getElementById('signinForm').classList.remove('active');
+    document.getElementById('registerForm').classList.remove('active');
+    document.getElementById('successTitle').textContent = title;
+    document.getElementById('successText').textContent = text;
+    document.getElementById('successBox').classList.add('show');
+}
+
+function handleSignIn() {
+    const email = document.getElementById('signin-email').value.trim();
+    const pass = document.getElementById('signin-pass').value.trim();
+    if (!email || !pass) { alert('⚠️ Please fill in all fields!'); return; }
+    showSuccess('👋 Welcome Back!', `You have successfully signed in as ${email}. Happy sourcing on NOVA B2B!`);
+}
+
+function handleRegister() {
+    const fname = document.getElementById('reg-fname').value.trim();
+    const email = document.getElementById('reg-email').value.trim();
+    const pass = document.getElementById('reg-pass').value.trim();
+    const pass2 = document.getElementById('reg-pass2').value.trim();
+    if (!fname || !email || !pass) { alert('⚠️ Please fill in all fields!'); return; }
+    if (pass !== pass2) { alert('⚠️ Passwords do not match!'); return; }
+    showSuccess('🎉 Account Created!', `Welcome to NOVA B2B, ${fname}! Your account has been created successfully. Start sourcing now!`);
+}
+
+function socialLogin(provider) {
+    showSuccess(`✅ Signed in with ${provider}!`, `You have successfully signed in using ${provider}. Welcome to NOVA B2B!`);
+}
+</script>
+
+<script src="chatbot.js"></script>
+</body>
+</html>

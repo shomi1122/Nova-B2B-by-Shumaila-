@@ -1,0 +1,552 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NOVA B2B – Place Order</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .order-wrapper {
+            max-width: 750px;
+            margin: 40px auto;
+            padding: 0 20px 60px;
+        }
+        .order-title {
+            text-align: center;
+            font-size: 32px;
+            font-weight: 800;
+            background: linear-gradient(135deg, #fff, #a855f7);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            margin-bottom: 8px;
+        }
+        .order-subtitle {
+            text-align: center;
+            color: #aaa;
+            font-size: 14px;
+            margin-bottom: 32px;
+        }
+        .order-card {
+            background: rgba(20, 25, 45, 0.7);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 28px;
+            padding: 32px;
+            margin-bottom: 24px;
+        }
+        .section-title {
+            font-size: 16px;
+            font-weight: 700;
+            color: #a855f7;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid rgba(255,255,255,0.08);
+        }
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+            margin-bottom: 16px;
+        }
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            margin-bottom: 16px;
+        }
+        .form-group label {
+            font-size: 13px;
+            color: #ccc;
+        }
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            background: rgba(255,255,255,0.07);
+            border: 1px solid rgba(255,255,255,0.15);
+            border-radius: 12px;
+            padding: 12px 16px;
+            color: white;
+            font-size: 14px;
+            font-family: inherit;
+            outline: none;
+            transition: border-color 0.2s;
+            width: 100%;
+        }
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            border-color: #a855f7;
+        }
+        .form-group input::placeholder,
+        .form-group textarea::placeholder {
+            color: #555;
+        }
+        .form-group select option {
+            background: #0a0f1e;
+        }
+        .form-group textarea {
+            resize: vertical;
+            min-height: 90px;
+        }
+
+        /* Product selector */
+        .product-select-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-bottom: 8px;
+        }
+        .product-option {
+            background: rgba(255,255,255,0.04);
+            border: 2px solid rgba(255,255,255,0.1);
+            border-radius: 14px;
+            padding: 12px;
+            cursor: pointer;
+            transition: 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 13px;
+        }
+        .product-option:hover {
+            border-color: #a855f7;
+            background: rgba(168,85,247,0.1);
+        }
+        .product-option.selected {
+            border-color: #f97316;
+            background: rgba(249,115,22,0.1);
+        }
+        .product-option span.emoji { font-size: 20px; }
+
+        /* Payment methods */
+        .payment-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-bottom: 8px;
+        }
+        .payment-option {
+            background: rgba(255,255,255,0.04);
+            border: 2px solid rgba(255,255,255,0.1);
+            border-radius: 14px;
+            padding: 14px 16px;
+            cursor: pointer;
+            transition: 0.2s;
+            text-align: center;
+            font-size: 13px;
+        }
+        .payment-option:hover {
+            border-color: #a855f7;
+            background: rgba(168,85,247,0.1);
+        }
+        .payment-option.selected {
+            border-color: #f97316;
+            background: rgba(249,115,22,0.1);
+        }
+        .payment-option .pay-icon { font-size: 24px; display: block; margin-bottom: 6px; }
+
+        /* Order summary */
+        .summary-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid rgba(255,255,255,0.06);
+            font-size: 14px;
+            color: #ccc;
+        }
+        .summary-row:last-child { border-bottom: none; }
+        .summary-row.total {
+            font-size: 18px;
+            font-weight: 700;
+            color: #f97316;
+            margin-top: 4px;
+        }
+
+        .place-order-btn {
+            width: 100%;
+            padding: 16px;
+            background: linear-gradient(95deg, #f97316, #a855f7);
+            border: none;
+            border-radius: 60px;
+            color: white;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: opacity 0.2s, transform 0.2s;
+            font-family: inherit;
+            margin-top: 8px;
+        }
+        .place-order-btn:hover {
+            opacity: 0.9;
+            transform: translateY(-2px);
+        }
+
+        /* Success Modal */
+        #success-modal {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.7);
+            backdrop-filter: blur(8px);
+            z-index: 9998;
+            align-items: center;
+            justify-content: center;
+        }
+        #success-modal.show { display: flex; }
+        .modal-box {
+            background: rgba(10,15,30,0.98);
+            border: 1px solid rgba(168,85,247,0.4);
+            border-radius: 28px;
+            padding: 40px 32px;
+            text-align: center;
+            max-width: 400px;
+            margin: 20px;
+            animation: popIn 0.3s ease;
+        }
+        @keyframes popIn {
+            from { transform: scale(0.8); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+        .modal-icon { font-size: 60px; margin-bottom: 16px; }
+        .modal-title {
+            font-size: 24px;
+            font-weight: 800;
+            background: linear-gradient(135deg, #fff, #a855f7);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            margin-bottom: 10px;
+        }
+        .modal-text { color: #aaa; font-size: 14px; line-height: 1.6; margin-bottom: 24px; }
+        .order-id {
+            background: rgba(168,85,247,0.15);
+            border: 1px solid rgba(168,85,247,0.3);
+            border-radius: 12px;
+            padding: 10px 20px;
+            font-size: 13px;
+            color: #a855f7;
+            margin-bottom: 24px;
+            font-weight: 600;
+        }
+
+        @media (max-width: 600px) {
+            .form-row { grid-template-columns: 1fr; }
+            .product-select-grid { grid-template-columns: 1fr; }
+            .payment-grid { grid-template-columns: 1fr 1fr; }
+            .order-card { padding: 20px; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="stars"></div>
+
+<header>
+    <div class="top-bar">
+        <div class="logo">⚡ NOVA B2B</div>
+        <div class="auth">
+            <a href="#">Sign in</a> <span>|</span> <a href="#">Register</a>
+            <span class="lang">🌐 English | USD</span>
+        </div>
+    </div>
+    <div class="main-header">
+        <nav class="categories-nav">
+            <a href="#" class="cat-dropdown">📂 Categories ▼</a>
+            <a href="index.html">🏠 Home</a>
+            <a href="products.html">🚚 Ready to Ship</a>
+            <a href="#">❤️ Favorites</a>
+            <a href="#">📦 My orders</a>
+        </nav>
+        <div class="search-glass">
+            <input type="text" id="searchInput" placeholder="Search products, suppliers...">
+            <button id="searchBtn">✨ Search</button>
+        </div>
+    </div>
+</header>
+
+<main>
+    <div class="order-wrapper">
+        <h1 class="order-title">📋 Place Your Order</h1>
+        <p class="order-subtitle">Fill in your details and we'll connect you with the supplier</p>
+
+        <!-- Product Selection -->
+        <div class="order-card">
+            <div class="section-title">📦 Select Product</div>
+            <div class="product-select-grid" id="productSelectGrid">
+                <div class="product-option selected" onclick="selectProduct(this, 'Wireless Headphones', 12.50)" data-price="12.50">
+                    <span class="emoji">🎧</span>
+                    <div><strong>Wireless Headphones</strong><br><span style="color:#f97316">$12.50/pc</span></div>
+                </div>
+                <div class="product-option" onclick="selectProduct(this, 'Smart Watch', 18.90)" data-price="18.90">
+                    <span class="emoji">⌚</span>
+                    <div><strong>Smart Watch</strong><br><span style="color:#f97316">$18.90/pc</span></div>
+                </div>
+                <div class="product-option" onclick="selectProduct(this, 'Cotton T-Shirt', 3.20)" data-price="3.20">
+                    <span class="emoji">👕</span>
+                    <div><strong>Cotton T-Shirt</strong><br><span style="color:#f97316">$3.20/pc</span></div>
+                </div>
+                <div class="product-option" onclick="selectProduct(this, 'Stainless Mug', 2.50)" data-price="2.50">
+                    <span class="emoji">☕</span>
+                    <div><strong>Stainless Mug</strong><br><span style="color:#f97316">$2.50/pc</span></div>
+                </div>
+                <div class="product-option" onclick="selectProduct(this, 'LED Desk Lamp', 6.80)" data-price="6.80">
+                    <span class="emoji">💡</span>
+                    <div><strong>LED Desk Lamp</strong><br><span style="color:#f97316">$6.80/pc</span></div>
+                </div>
+                <div class="product-option" onclick="selectProduct(this, 'Backpack', 8.90)" data-price="8.90">
+                    <span class="emoji">🎒</span>
+                    <div><strong>Backpack</strong><br><span style="color:#f97316">$8.90/pc</span></div>
+                </div>
+                <div class="product-option" onclick="selectProduct(this, 'Smart Speaker', 22.50)" data-price="22.50">
+                    <span class="emoji">🔊</span>
+                    <div><strong>Smart Speaker</strong><br><span style="color:#f97316">$22.50/pc</span></div>
+                </div>
+                <div class="product-option" onclick="selectProduct(this, 'Yoga Mat', 4.50)" data-price="4.50">
+                    <span class="emoji">🧘</span>
+                    <div><strong>Yoga Mat</strong><br><span style="color:#f97316">$4.50/pc</span></div>
+                </div>
+            </div>
+
+            <div class="form-group" style="margin-top:16px;">
+                <label>📦 Quantity (pieces)</label>
+                <input type="number" id="quantityInput" value="100" min="1" placeholder="Enter quantity" oninput="updateSummary()">
+            </div>
+        </div>
+
+        <!-- Buyer Info -->
+        <div class="order-card">
+            <div class="section-title">👤 Buyer Information</div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label>First Name</label>
+                    <input type="text" placeholder="e.g. Shumaila">
+                </div>
+                <div class="form-group">
+                    <label>Last Name</label>
+                    <input type="text" placeholder="e.g. Abid">
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label>📧 Email Address</label>
+                    <input type="email" placeholder="your@email.com">
+                </div>
+                <div class="form-group">
+                    <label>📱 Phone / WhatsApp</label>
+                    <input type="text" placeholder="+92 300 0000000">
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label>🌍 Country</label>
+                    <select>
+                        <option>🇵🇰 Pakistan</option>
+                        <option>🇦🇪 UAE</option>
+                        <option>🇺🇸 United States</option>
+                        <option>🇬🇧 United Kingdom</option>
+                        <option>🇸🇦 Saudi Arabia</option>
+                        <option>🇩🇪 Germany</option>
+                        <option>🇨🇦 Canada</option>
+                        <option>🇦🇺 Australia</option>
+                        <option>🇮🇳 India</option>
+                        <option>Other</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>🚚 Shipping Method</label>
+                    <select id="shippingSelect" onchange="updateSummary()">
+                        <option value="0">🐢 Standard (15-25 days) — Free</option>
+                        <option value="50">⚡ Express (7-10 days) — $50</option>
+                        <option value="120">✈️ Air Freight (3-5 days) — $120</option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-group">
+                <label>📝 Special Instructions (optional)</label>
+                <textarea placeholder="e.g. Custom logo, specific color, packaging requirements..."></textarea>
+            </div>
+        </div>
+
+        <!-- Payment Method -->
+        <div class="order-card">
+            <div class="section-title">💳 Payment Method</div>
+            <div class="payment-grid">
+                <div class="payment-option selected" onclick="selectPayment(this)">
+                    <span class="pay-icon">🏦</span>
+                    Bank Transfer
+                </div>
+                <div class="payment-option" onclick="selectPayment(this)">
+                    <span class="pay-icon">💙</span>
+                    PayPal
+                </div>
+                <div class="payment-option" onclick="selectPayment(this)">
+                    <span class="pay-icon">💳</span>
+                    Credit Card
+                </div>
+                <div class="payment-option" onclick="selectPayment(this)">
+                    <span class="pay-icon">🛡️</span>
+                    Trade Assurance
+                </div>
+            </div>
+        </div>
+
+        <!-- Order Summary -->
+        <div class="order-card">
+            <div class="section-title">🧾 Order Summary</div>
+            <div class="summary-row">
+                <span>Product</span>
+                <span id="sum-product">Wireless Headphones</span>
+            </div>
+            <div class="summary-row">
+                <span>Unit Price</span>
+                <span id="sum-price">$12.50</span>
+            </div>
+            <div class="summary-row">
+                <span>Quantity</span>
+                <span id="sum-qty">100 pcs</span>
+            </div>
+            <div class="summary-row">
+                <span>Subtotal</span>
+                <span id="sum-subtotal">$1,250.00</span>
+            </div>
+            <div class="summary-row">
+                <span>Shipping</span>
+                <span id="sum-shipping">Free</span>
+            </div>
+            <div class="summary-row total">
+                <span>Total</span>
+                <span id="sum-total">$1,250.00</span>
+            </div>
+
+            <button class="place-order-btn" onclick="placeOrder()">
+                ✅ Place Order Now
+            </button>
+        </div>
+    </div>
+</main>
+
+<!-- Success Modal -->
+<div id="success-modal">
+    <div class="modal-box">
+        <div class="modal-icon">🎉</div>
+        <div class="modal-title">Order Placed!</div>
+        <p class="modal-text">Your order has been successfully submitted. Our supplier will contact you within <strong>24 hours</strong> to confirm the details.</p>
+        <div class="order-id" id="order-id-display">Order ID: #NVB-000000</div>
+        <button class="btn-glow" onclick="closeModal()" style="margin-right:10px;">🛍️ Continue Shopping</button>
+    </div>
+</div>
+
+<footer>
+    <div class="footer-links">
+        <a href="#">📞 Contact us</a>
+        <a href="#">ℹ️ About</a>
+        <a href="#">📄 User agreement</a>
+        <a href="#">🤝 Partnership</a>
+        <a href="#">🔒 Privacy policy</a>
+    </div>
+    <p>© 2026 NOVA B2B — Global trade starts here</p>
+    <p style="margin-top:8px; font-size:13px; background: linear-gradient(135deg, #a855f7, #f97316); -webkit-background-clip:text; background-clip:text; color:transparent; font-weight:600;">✦ Designed by Shumaila Abid ✦</p>
+</footer>
+
+<script>
+let selectedProduct = 'Wireless Headphones';
+let selectedPrice = 12.50;
+
+// Currency rates (same as currency.js)
+const orderCurrencies = {
+    USD: { symbol: '$', rate: 1 },
+    PKR: { symbol: '₨', rate: 278 },
+    EUR: { symbol: '€', rate: 0.92 },
+    AED: { symbol: 'د.إ', rate: 3.67 },
+    GBP: { symbol: '£', rate: 0.79 },
+    CNY: { symbol: '¥', rate: 7.24 },
+};
+
+function getActiveCurrency() {
+    const activeBtn = document.querySelector('.cur-btn.active');
+    if (activeBtn) {
+        const code = activeBtn.textContent.trim().split(' ').pop();
+        return orderCurrencies[code] || orderCurrencies['USD'];
+    }
+    return orderCurrencies['USD'];
+}
+
+function formatPrice(usdAmount) {
+    const cur = getActiveCurrency();
+    const converted = usdAmount * cur.rate;
+    return cur.symbol + converted.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+}
+
+function selectProduct(el, name, price) {
+    document.querySelectorAll('.product-option').forEach(e => e.classList.remove('selected'));
+    el.classList.add('selected');
+    selectedProduct = name;
+    selectedPrice = price;
+    updateSummary();
+}
+
+function selectPayment(el) {
+    document.querySelectorAll('.payment-option').forEach(e => e.classList.remove('selected'));
+    el.classList.add('selected');
+}
+
+// Currency rates
+const rates = { USD:{symbol:'$',rate:1}, PKR:{symbol:'₨',rate:278}, EUR:{symbol:'€',rate:0.92}, AED:{symbol:'د.إ',rate:3.67}, GBP:{symbol:'£',rate:0.79}, CNY:{symbol:'¥',rate:7.24} };
+
+function getCurrency() {
+    const active = document.querySelector('.cur-btn.active');
+    const code = active ? active.textContent.trim().split(' ').pop() : 'USD';
+    return rates[code] || rates['USD'];
+}
+
+function formatPrice(usd) {
+    const cur = getCurrency();
+    const val = (usd * cur.rate).toFixed(2);
+    return cur.symbol + parseFloat(val).toLocaleString('en-US', {minimumFractionDigits: 2});
+}
+
+function updateSummary() {
+    const qty = parseInt(document.getElementById('quantityInput').value) || 0;
+    const shippingUSD = parseInt(document.getElementById('shippingSelect').value) || 0;
+    const subtotal = selectedPrice * qty;
+    const total = subtotal + shippingUSD;
+
+    document.getElementById('sum-product').textContent = selectedProduct;
+    document.getElementById('sum-price').textContent = formatPrice(selectedPrice) + '/pc';
+    document.getElementById('sum-qty').textContent = qty + ' pcs';
+    document.getElementById('sum-subtotal').textContent = formatPrice(subtotal);
+    document.getElementById('sum-shipping').textContent = shippingUSD === 0 ? 'Free' : formatPrice(shippingUSD);
+    document.getElementById('sum-total').textContent = formatPrice(total);
+
+    // Update product card prices
+    document.querySelectorAll('.product-option').forEach(el => {
+        const usdPrice = parseFloat(el.dataset.price);
+        const priceEl = el.querySelector('span[style*="f97316"]');
+        if (usdPrice && priceEl) priceEl.textContent = formatPrice(usdPrice) + '/pc';
+    });
+}
+
+// Re-run when currency changes
+document.addEventListener('click', (e) => {
+    if (e.target.classList.contains('cur-btn')) {
+        setTimeout(updateSummary, 100);
+    }
+});
+
+function placeOrder() {
+    const orderId = '#NVB-' + Math.floor(100000 + Math.random() * 900000);
+    document.getElementById('order-id-display').textContent = 'Order ID: ' + orderId;
+    document.getElementById('success-modal').classList.add('show');
+}
+
+function closeModal() {
+    document.getElementById('success-modal').classList.remove('show');
+    window.location.href = 'products.html';
+}
+</script>
+
+<script src="chatbot.js"></script>
+<script src="currency.js"></script>
+</body>
+</html>

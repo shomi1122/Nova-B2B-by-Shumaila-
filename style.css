@@ -12,7 +12,7 @@ body {
     min-height: 100vh;
 }
 
-/* stars animation */
+/* ===== STARS ===== */
 .stars {
     position: fixed;
     top: 0;
@@ -28,7 +28,9 @@ body {
     width: 100%;
     height: 100%;
     background-image: radial-gradient(2px 2px at 20px 30px, #fff, rgba(0,0,0,0)),
-                      radial-gradient(1px 1px at 80px 200px, #fff, rgba(0,0,0,0));
+                      radial-gradient(1px 1px at 80px 200px, #fff, rgba(0,0,0,0)),
+                      radial-gradient(1px 1px at 140px 80px, #fff, rgba(0,0,0,0)),
+                      radial-gradient(2px 2px at 160px 120px, #fff, rgba(0,0,0,0));
     background-repeat: repeat;
     background-size: 200px 200px;
     opacity: 0.3;
@@ -39,7 +41,7 @@ body {
     100% { opacity: 0.6; }
 }
 
-/* glass header */
+/* ===== HEADER ===== */
 header {
     background: rgba(10, 15, 30, 0.7);
     backdrop-filter: blur(12px);
@@ -73,9 +75,7 @@ header {
     text-decoration: none;
     margin: 0 4px;
 }
-.auth a:hover {
-    color: #a855f7;
-}
+.auth a:hover { color: #a855f7; }
 
 .main-header {
     display: flex;
@@ -90,18 +90,24 @@ header {
     display: flex;
     gap: 24px;
     flex-wrap: wrap;
+    align-items: center;
 }
 .categories-nav a {
     color: #e2e8f0;
     text-decoration: none;
     font-weight: 500;
+    transition: color 0.2s;
 }
+.categories-nav a:hover { color: #a855f7; }
+
 .cat-dropdown {
     background: linear-gradient(95deg, #f97316, #a855f7);
     padding: 6px 16px;
     border-radius: 40px;
     color: white !important;
 }
+
+/* ===== SEARCH ===== */
 .search-glass {
     display: flex;
     flex: 1;
@@ -114,7 +120,14 @@ header {
     border-radius: 60px 0 0 60px;
     padding: 12px 20px;
     color: white;
+    font-size: 14px;
+    outline: none;
+    transition: border-color 0.2s;
 }
+.search-glass input:focus {
+    border-color: #a855f7;
+}
+.search-glass input::placeholder { color: #888; }
 .search-glass button {
     background: linear-gradient(95deg, #f97316, #a855f7);
     border: none;
@@ -122,31 +135,48 @@ header {
     padding: 0 24px;
     font-weight: bold;
     cursor: pointer;
+    color: white;
+    font-size: 14px;
+    transition: opacity 0.2s;
 }
+.search-glass button:hover { opacity: 0.85; }
+
+/* ===== HERO ===== */
 .hero-b2b {
-    background: radial-gradient(ellipse at 50% 30%, rgba(15,25,50,0.8), transparent);
+    background: radial-gradient(ellipse at 50% 30%, rgba(168,85,247,0.15), transparent);
     text-align: center;
     padding: 70px 20px;
     margin: 20px;
     border-radius: 48px;
+    border: 1px solid rgba(255,255,255,0.05);
 }
 .hero-content {
     max-width: 700px;
     margin: 0 auto;
 }
 .badge {
-    background: #ff8c00;
+    background: linear-gradient(95deg, #f97316, #a855f7);
     padding: 4px 16px;
     border-radius: 40px;
     display: inline-block;
     margin-bottom: 20px;
+    font-size: 13px;
+    font-weight: 600;
 }
-.hero h1 {
+.hero-b2b h1 {
     font-size: 56px;
+    font-weight: 800;
     background: linear-gradient(135deg, #fff, #a855f7);
     -webkit-background-clip: text;
     background-clip: text;
     color: transparent;
+    line-height: 1.2;
+    margin-bottom: 16px;
+}
+.hero-b2b p {
+    color: #aaa;
+    font-size: 16px;
+    margin-bottom: 8px;
 }
 .btn-glow {
     background: linear-gradient(95deg, #f97316, #a855f7);
@@ -159,17 +189,26 @@ header {
     display: inline-block;
     text-decoration: none;
     margin-top: 24px;
+    font-size: 15px;
+    transition: opacity 0.2s, transform 0.2s;
 }
+.btn-glow:hover {
+    opacity: 0.9;
+    transform: translateY(-2px);
+}
+
+/* ===== CATEGORIES ===== */
 .categories-b2b, .featured-suppliers {
     margin: 40px 20px;
 }
 h2 {
     font-size: 28px;
+    font-weight: 700;
     margin-bottom: 20px;
 }
 .cat-flex {
     display: flex;
-    gap: 20px;
+    gap: 16px;
     flex-wrap: wrap;
 }
 .cat-card {
@@ -178,7 +217,16 @@ h2 {
     padding: 12px 28px;
     border-radius: 60px;
     border: 1px solid rgba(255,255,255,0.1);
+    cursor: pointer;
+    transition: 0.2s;
+    font-size: 15px;
 }
+.cat-card:hover {
+    border-color: #a855f7;
+    background: rgba(168,85,247,0.15);
+}
+
+/* ===== PRODUCT GRID ===== */
 .product-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
@@ -192,10 +240,12 @@ h2 {
     padding: 16px;
     border: 1px solid rgba(255,255,255,0.1);
     transition: 0.2s;
+    cursor: pointer;
 }
 .product-card:hover {
     transform: translateY(-5px);
     border-color: #f97316;
+    box-shadow: 0 8px 32px rgba(249,115,22,0.15);
 }
 .product-card img {
     width: 100%;
@@ -205,12 +255,14 @@ h2 {
     border-radius: 16px;
 }
 .product-card h3 {
-    font-size: 18px;
+    font-size: 16px;
+    font-weight: 600;
     margin: 12px 0 4px;
 }
 .supplier-name {
     font-size: 12px;
     color: #aaa;
+    margin-bottom: 4px;
 }
 .price-b2b {
     font-size: 20px;
@@ -221,21 +273,40 @@ h2 {
 .moq {
     font-size: 12px;
     color: #ccc;
+    margin-bottom: 4px;
 }
 .order-btn {
-    background: #f97316;
+    background: linear-gradient(95deg, #f97316, #a855f7);
     border: none;
     width: 100%;
-    padding: 8px;
+    padding: 9px;
     border-radius: 40px;
     margin-top: 12px;
     cursor: pointer;
     font-weight: bold;
+    color: white;
+    font-size: 13px;
+    transition: opacity 0.2s;
 }
+.order-btn:hover { opacity: 0.85; }
+
+/* ===== LOAD MORE ===== */
 .load-more {
     text-align: center;
     margin: 40px 0;
 }
+.page-title {
+    text-align: center;
+    font-size: 32px;
+    font-weight: 800;
+    margin: 30px 20px 10px;
+    background: linear-gradient(135deg, #fff, #a855f7);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+}
+
+/* ===== PRODUCT DETAIL PAGE ===== */
 .detail-alibaba-glass {
     display: flex;
     gap: 48px;
@@ -250,6 +321,7 @@ h2 {
 }
 .detail-img {
     flex: 1;
+    min-width: 280px;
 }
 .detail-img img {
     width: 100%;
@@ -257,20 +329,54 @@ h2 {
 }
 .detail-info {
     flex: 1;
+    min-width: 280px;
+}
+.detail-info h1 {
+    font-size: 28px;
+    font-weight: 700;
+    margin-bottom: 12px;
 }
 .supplier {
     color: #a855f7;
     margin: 8px 0;
+    font-size: 14px;
 }
 .price {
     font-size: 32px;
     color: #f97316;
     font-weight: bold;
+    margin: 12px 0;
 }
-.moq {
+.detail-info .moq {
     font-weight: bold;
+    font-size: 14px;
+    color: #ccc;
     margin: 8px 0;
 }
+.detail-info p {
+    color: #aaa;
+    margin: 8px 0;
+    font-size: 14px;
+}
+.detail-info label {
+    display: block;
+    margin-top: 16px;
+    margin-bottom: 6px;
+    font-size: 14px;
+    color: #ccc;
+}
+.detail-info select {
+    background: rgba(255,255,255,0.08);
+    border: 1px solid rgba(255,255,255,0.2);
+    border-radius: 40px;
+    padding: 8px 16px;
+    color: white;
+    font-size: 14px;
+    cursor: pointer;
+    outline: none;
+}
+
+/* ===== REVIEWS ===== */
 .reviews-glass {
     max-width: 800px;
     margin: 30px auto;
@@ -278,7 +384,22 @@ h2 {
     background: rgba(20, 25, 45, 0.6);
     backdrop-filter: blur(8px);
     border-radius: 28px;
+    border: 1px solid rgba(255,255,255,0.1);
 }
+.reviews-glass h3 {
+    font-size: 20px;
+    font-weight: 600;
+    margin-bottom: 16px;
+}
+.reviews-glass div {
+    padding: 10px 0;
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+    color: #ccc;
+    font-size: 14px;
+}
+.reviews-glass div:last-child { border-bottom: none; }
+
+/* ===== FOOTER ===== */
 footer {
     background: rgba(0,0,0,0.6);
     backdrop-filter: blur(8px);
@@ -296,14 +417,79 @@ footer {
 .footer-links a {
     color: #ccc;
     text-decoration: none;
+    font-size: 14px;
+    transition: color 0.2s;
 }
-.footer-links a:hover {
-    color: #f97316;
+.footer-links a:hover { color: #f97316; }
+footer p {
+    color: #555;
+    font-size: 13px;
 }
+
+/* ===== MOBILE ===== */
 @media (max-width: 700px) {
     header { padding: 16px; }
     .main-header { flex-direction: column; align-items: stretch; }
     .search-glass { max-width: 100%; }
-    .hero h1 { font-size: 36px; }
+    .hero-b2b h1 { font-size: 36px; }
     .product-grid { grid-template-columns: 1fr 1fr; gap: 12px; }
+    .detail-alibaba-glass { flex-direction: column; gap: 24px; margin: 20px; padding: 20px; }
+    .logo { font-size: 22px; }
+    h2 { font-size: 22px; }
 }
+
+/* ===== TABLET (768px - 1024px) ===== */
+@media (max-width: 1024px) and (min-width: 701px) {
+    .hero-b2b h1 { font-size: 42px; }
+    .product-grid { grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); }
+    .detail-alibaba-glass { gap: 28px; padding: 24px; }
+    header { padding: 16px 20px; }
+}
+
+/* ===== MOBILE FIXES (max 700px) ===== */
+@media (max-width: 700px) {
+    /* Header */
+    .top-bar { flex-direction: column; align-items: flex-start; gap: 6px; }
+    .categories-nav { gap: 12px; font-size: 13px; }
+    .cat-dropdown { padding: 4px 12px; font-size: 12px; }
+
+    /* Hero */
+    .hero-b2b { padding: 40px 16px; margin: 12px; border-radius: 28px; }
+    .hero-b2b h1 { font-size: 30px; }
+    .hero-b2b p { font-size: 13px; }
+    .btn-glow { padding: 10px 24px; font-size: 14px; }
+    .badge { font-size: 12px; }
+
+    /* Categories */
+    .cat-flex { gap: 10px; }
+    .cat-card { padding: 8px 16px; font-size: 13px; }
+    .categories-b2b, .featured-suppliers { margin: 24px 12px; }
+
+    /* Products grid - 1 column on very small, 2 on normal mobile */
+    .product-grid { grid-template-columns: 1fr 1fr; gap: 10px; }
+    .product-card { padding: 12px; border-radius: 16px; }
+    .product-card img { height: 130px; }
+    .product-card h3 { font-size: 13px; }
+    .price-b2b { font-size: 15px; }
+    .order-btn { font-size: 11px; padding: 7px; }
+
+    /* Page title */
+    .page-title { font-size: 24px; margin: 20px 12px 8px; }
+
+    /* Detail page */
+    .detail-info h1 { font-size: 20px; }
+    .price { font-size: 24px; }
+    .reviews-glass { margin: 16px 12px; padding: 16px; }
+
+    /* Footer */
+    .footer-links { gap: 16px; }
+    .footer-links a { font-size: 12px; }
+}
+
+/* ===== VERY SMALL PHONES (max 400px) ===== */
+@media (max-width: 400px) {
+    .product-grid { grid-template-columns: 1fr; }
+    .hero-b2b h1 { font-size: 26px; }
+    .logo { font-size: 20px; }
+}
+
